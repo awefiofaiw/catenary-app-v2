@@ -5,16 +5,21 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from scipy.optimize import fsolve
 from scipy.integrate import quad
+from PIL import Image
 
 # 한글 폰트 설정
 font_path = "NanumGothic-Regular.ttf"
 font_prop = fm.FontProperties(fname=font_path)
 plt.rcParams['font.family'] = font_prop.get_name()
 
+# 상단 아이콘 + 제목
 st.set_page_config(page_title="케이블 구조물 최적 설계 도우미")
+col1, col2 = st.columns([1, 10])
+with col1:
+    st.image("bridge_icon.png", width=50)
+with col2:
+    st.markdown("### 케이블 구조물 최적 설계 도우미")
 
-# 타이틀
-st.markdown("### 🏗️ 케이블 구조물 최적 설계 도우미")
 st.write("입력한 거리(D)와 처짐 깊이(H)를 바탕으로 최적 a값, 곡선 그래프, 장력 방향, 퍼텐셜 에너지, 자재 길이를 시각화합니다.")
 
 # 사용자 입력
@@ -52,7 +57,7 @@ if st.button("계산하기"):
         st.info(f"🔷 퍼텐셜 에너지: {U:,.2f} J")
         st.info(f"🧱 예상 자재 길이: {L:.2f} m")
 
-        # 곡선 및 장력 시각화 (정규화 + 확대 적용)
+        # 곡선 및 장력 시각화
         x_vals = np.linspace(-D/2, D/2, 400)
         y_vals = catenary_y(x_vals, a_sol)
 
@@ -60,7 +65,6 @@ if st.button("계산하기"):
         y_arrow = catenary_y(x_arrow, a_sol)
         dy_raw = catenary_dy(x_arrow, a_sol)
 
-        # 정규화된 장력 방향 벡터에 확대 계수 적용
         magnitude = 30
         norm = np.sqrt(1 + dy_raw**2)
         dx = magnitude / norm
