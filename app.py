@@ -1,6 +1,9 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['font.family'] = 'NanumGothic'
+
 from scipy.optimize import fsolve
 from scipy.integrate import quad
 
@@ -63,7 +66,7 @@ if st.button("계산하기"):
 
         ax.set_xlabel("x (m)")
         ax.set_ylabel("y (m)")
-        ax.set_title("현수선 곡선 및 장력 방향")
+        ax.set_title("현수선 곡선 및 장력 방향", fontproperties="NanumGothic")
         ax.grid(True)
         st.pyplot(fig)
 
