@@ -52,25 +52,22 @@ if st.button("계산하기"):
         st.info(f"🔷 퍼텐셜 에너지: {U:,.2f} J")
         st.info(f"🧱 예상 자재 길이: {L:.2f} m")
 
-        # 곡선 및 장력 시각화
-        x_vals = np.linspace(-D/2, D/2, 300)
+        # 곡선 및 장력 시각화 (MATLAB 스타일)
+        x_vals = np.linspace(-D/2, D/2, 400)
         y_vals = catenary_y(x_vals, a_sol)
 
-        # 장력 벡터 (곡선 접선 방향) + 길이 조절
-        x_arrow = np.linspace(-D/2, D/2, 15)
+        # 장력 벡터: dx=1, dy=sinh(x/a)
+        x_arrow = np.linspace(-D/2, D/2, 7)
         y_arrow = catenary_y(x_arrow, a_sol)
+        dx = np.ones_like(x_arrow)
         dy = catenary_dy(x_arrow, a_sol)
-        magnitude = 10  # 벡터 크기 확대 계수
-
-        ux = magnitude / np.sqrt(1 + dy**2)
-        uy = (dy * magnitude) / np.sqrt(1 + dy**2)
 
         fig, ax = plt.subplots()
-        ax.plot(x_vals, y_vals, label="현수선 곡선", color='darkorange', linewidth=2)
-        ax.quiver(x_arrow, y_arrow, ux, uy, angles='xy', scale_units='xy', scale=1, color='firebrick', width=0.005, label="장력 방향")
+        ax.plot(x_vals, y_vals, label="곡선", color=(1.0, 0.4, 0.1), linewidth=2)
+        ax.quiver(x_arrow, y_arrow, dx, dy, scale=1/0.3, angles='xy',
+                  scale_units='xy', color='r', width=0.008, label="장력 방향")
 
-        # 제목에 거리와 처짐 값 반영
-        ax.set_title(f"{D:.0f}m 거리, {H:.0f}m 처짐에 대한 현수선 곡선 및 장력 방향", fontproperties=font_prop)
+        ax.set_title(f"현수선 곡선 및 장력 방향 (D={int(D)}, H={int(H)})", fontproperties=font_prop)
         ax.set_xlabel("x (m)", fontproperties=font_prop)
         ax.set_ylabel("y (m)", fontproperties=font_prop)
         ax.legend(prop=font_prop)
