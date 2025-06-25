@@ -56,17 +56,21 @@ if st.button("계산하기"):
         x_vals = np.linspace(-D/2, D/2, 300)
         y_vals = catenary_y(x_vals, a_sol)
 
-        # 장력 방향은 곡선의 접선 방향을 따라가도록 설정 (단위 벡터로 정규화)
-        x_arrow = np.linspace(-D/2, D/2, 20)
+        # 장력 벡터 (곡선 접선 방향) + 길이 조절
+        x_arrow = np.linspace(-D/2, D/2, 15)
         y_arrow = catenary_y(x_arrow, a_sol)
         dy = catenary_dy(x_arrow, a_sol)
-        ux = np.ones_like(x_arrow)
-        uy = dy / np.sqrt(1 + dy**2)
+        magnitude = 10  # 벡터 크기 확대 계수
+
+        ux = magnitude / np.sqrt(1 + dy**2)
+        uy = (dy * magnitude) / np.sqrt(1 + dy**2)
 
         fig, ax = plt.subplots()
-        ax.plot(x_vals, y_vals, label="현수선 곡선", color='royalblue', linewidth=2)
-        ax.quiver(x_arrow, y_arrow, ux, uy, angles='xy', scale_units='xy', scale=5, color='darkred', width=0.004, label="장력 방향")
-        ax.set_title("현수선 곡선 및 장력 방향", fontproperties=font_prop)
+        ax.plot(x_vals, y_vals, label="현수선 곡선", color='darkorange', linewidth=2)
+        ax.quiver(x_arrow, y_arrow, ux, uy, angles='xy', scale_units='xy', scale=1, color='firebrick', width=0.005, label="장력 방향")
+
+        # 제목에 거리와 처짐 값 반영
+        ax.set_title(f"{D:.0f}m 거리, {H:.0f}m 처짐에 대한 현수선 곡선 및 장력 방향", fontproperties=font_prop)
         ax.set_xlabel("x (m)", fontproperties=font_prop)
         ax.set_ylabel("y (m)", fontproperties=font_prop)
         ax.legend(prop=font_prop)
