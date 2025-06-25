@@ -52,19 +52,23 @@ if st.button("계산하기"):
         st.info(f"🔷 퍼텐셜 에너지: {U:,.2f} J")
         st.info(f"🧱 예상 자재 길이: {L:.2f} m")
 
-        # 곡선 및 장력 시각화 (MATLAB 스타일)
+        # 곡선 및 장력 시각화 (정규화 + 확대 적용)
         x_vals = np.linspace(-D/2, D/2, 400)
         y_vals = catenary_y(x_vals, a_sol)
 
-        # 장력 벡터: dx=1, dy=sinh(x/a)
         x_arrow = np.linspace(-D/2, D/2, 7)
         y_arrow = catenary_y(x_arrow, a_sol)
-        dx = np.ones_like(x_arrow)
-        dy = catenary_dy(x_arrow, a_sol)
+        dy_raw = catenary_dy(x_arrow, a_sol)
+
+        # 정규화된 장력 방향 벡터에 확대 계수 적용
+        magnitude = 30
+        norm = np.sqrt(1 + dy_raw**2)
+        dx = magnitude / norm
+        dy = dy_raw * magnitude / norm
 
         fig, ax = plt.subplots()
         ax.plot(x_vals, y_vals, label="곡선", color=(1.0, 0.4, 0.1), linewidth=2)
-        ax.quiver(x_arrow, y_arrow, dx, dy, scale=1/0.3, angles='xy',
+        ax.quiver(x_arrow, y_arrow, dx, dy, scale=None, angles='xy',
                   scale_units='xy', color='r', width=0.008, label="장력 방향")
 
         ax.set_title(f"현수선 곡선 및 장력 방향 (D={int(D)}, H={int(H)})", fontproperties=font_prop)
